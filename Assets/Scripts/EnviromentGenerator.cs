@@ -20,6 +20,27 @@ public class Enviroment : MonoBehaviour
 
     private void OnValidate()
     {
-                
+        spriteShapeController.spline.Clear();
+
+        for (int i = 0; i < levelLenght; i++)
+        {
+            lastPosition = transform.position +
+                new Vector3(i * xMultiplayer, Mathf.PerlinNoise(0, i * noiseStep) * yMultiplayer);
+            spriteShapeController.spline.InsertPointAt(i, lastPosition);
+
+            if (i != 0 && i != levelLenght - 1)
+            {
+                spriteShapeController.spline.
+                    SetTangentMode(i, ShapeTangentMode.Continuous);
+                spriteShapeController.spline.
+                    SetLeftTangent(i, Vector3.left * xMultiplayer * curveSmothness);
+                spriteShapeController.spline.
+                    SetRightTangent(i, Vector3.right * xMultiplayer * curveSmothness);
+            }
+        }
+        spriteShapeController.spline.
+            InsertPointAt(levelLenght, new Vector3(lastPosition.x, transform.position.y - bottom));
+        spriteShapeController.spline.
+           InsertPointAt(levelLenght + 1, new Vector3(transform.position.x, transform.position.y - bottom));
     }
 }
